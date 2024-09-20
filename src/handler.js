@@ -27,12 +27,16 @@ const getAllBooks = (req, h) => {
             filterBooks = filterBooks.filter((book) => book.finished === true);
         }
     };
+    
+    // Maping array books before refactor
 
-    const result = filterBooks.map((book) => ({
-        id: book.id,
-        name: book.name,
-        publisher: book.publisher,
-    }))
+    // const result = filterBooks.map((book) => ({
+    //     id: book.id,
+    //     name: book.name,
+    //     publisher: book.publisher,
+    // }))
+
+    const result = filteredBooks.map(({ id, name, publisher }) => ({ id, name, publisher }))
 
     const response = h.response({
         status: 'success',
@@ -77,8 +81,11 @@ const addBookHandler = (req, h) => {
     };
 
     books.push(newBook);
+    // before refactor 
+    // const isSuccess = books.filter((book) => book.id === id).length > 0;
+    
+    const isSuccess = books.some((book) => book.id === id);
 
-    const isSuccess = books.filter((book) => book.id === id).length > 0;
     if (isSuccess) {
         const response = h.response({
             status: 'success',
@@ -103,8 +110,7 @@ const getBookByIdHandler = (req, h) => {
     const { id } = req.params;
     const book = books.filter((n) => n.id === id)[0];
 
-    if (book !== undefined) {
-
+    if (book) {
         const response = h.response({
             status: 'success',
             data: {
